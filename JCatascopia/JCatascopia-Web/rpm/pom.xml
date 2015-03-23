@@ -1,0 +1,117 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>JCatascopia-Web</groupId>
+    <artifactId>JCatascopia-Web</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  
+ <artifactId>JCatascopia-Web-rpm</artifactId>
+	<packaging>pom</packaging>
+
+	<properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <api.war>JCatascopia-Web.war</api.war>
+   		<rpm.install.basedir>/usr/share/tomcat/</rpm.install.basedir>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>JCatascopia-Web</groupId>
+            <artifactId>JCatascopia-Web-war</artifactId>
+            <version>${project.version}</version>
+            <type>war</type>
+        </dependency>
+    </dependencies>
+
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+                    <execution>
+                        <id>copy-war</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>JCatascopia-Web</groupId>
+            						<artifactId>JCatascopia-Web-war</artifactId>
+                                    <type>war</type>
+                                    <destFileName>${api.war}</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+			</plugin>
+		
+			 <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>rpm-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+	                <classifier>${package.os}</classifier>
+                    <!-- <release>${BUILD_NUMBER}.${package.os}</release>-->
+	                <summary>JCatascopia-Web</summary>
+	                <name>JCatascopia-Web</name>
+	                <group>JCatascopia</group>
+                    <vendor>CELAR</vendor>
+	    		    <packager>trihinas@cs.ucy.ac.cy</packager>
+	    		    <copyright>Apache License, Version 2.0</copyright>
+	    		    <url>http://celarcloud.eu</url>
+	    		    <needarch>noarch</needarch>
+	    		    <description>JCatascopia-Web-rpm</description>
+	    		    <!-- <requires>
+	    		      <require>tomcat</require>
+	    		    </requires>-->
+	                <mappings>
+	                    <mapping>
+	                        <directory>${rpm.install.basedir}/webapps/</directory>
+	                        <username>root</username>
+	                        <groupname>root</groupname>
+	                        <directoryIncluded>false</directoryIncluded>
+	                        <sources>
+	                            <source>
+	                                <location>${basedir}/target/dependency/${api.war}</location>
+	                            </source>
+	                        </sources>
+	                    </mapping>
+	                </mappings>  
+	                 <preinstallScriptlet>
+			            <script>
+							echo "Installing JCatascopia-Web via RPM..."
+			            </script>
+			          </preinstallScriptlet>
+			
+			          <postinstallScriptlet>
+			            <script>
+							echo "JCatascopia-Web: installation finished..."
+			            </script>
+			          </postinstallScriptlet>  
+			          
+			          <postremoveScriptlet>
+	                    <script>
+							rm -f ${rpm.install.basedir}/webapps/${api.war}
+	                    </script>
+	                </postremoveScriptlet>  
+               </configuration>
+               
+               <executions>
+                   <execution>
+                       <id>attach-rpm</id>
+                       <phase>package</phase>
+                       <goals>
+                           <goal>attached-rpm</goal>
+                       </goals>
+                   </execution>
+               </executions>
+			</plugin>  
+		</plugins>
+	</build>
+</project>

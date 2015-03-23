@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>JCatascopia</artifactId>
+    <groupId>JCatascopia</groupId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>JCatascopia-Server</groupId>
+  <artifactId>JCatascopia-Server</artifactId>
+  <build>
+    <resources>
+      <resource>
+        <filtering>true</filtering>
+        <directory>scripts</directory>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.1</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <transformers>
+                <transformer>
+                  <mainClass>eu.celarcloud.celar_ms.ServerPack.MonitoringServer</mainClass>
+                </transformer>
+              </transformers>
+              <filters>
+                <filter>
+                  <artifact>*:*:*:*</artifact>
+                  <excludes>
+                    <exclude>scripts/**</exclude>
+                  </excludes>
+                </filter>
+              </filters>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <descriptor>src/assembly/bin.xml</descriptor>
+          <finalName>JCatascopia-Server-${project.version}</finalName>
+          <archive>
+            <manifest>
+              <mainClass>eu.celarcloud.celar_ms.ServerPack.MonitoringServer</mainClass>
+              <packageName>eu.celarcloud.celar_ms.ServerPack</packageName>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>rpm-maven-plugin</artifactId>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <id>attach-rpm</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attached-rpm</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <classifier>${package.os}</classifier>
+          <summary>JCatascopia-Server</summary>
+          <name>JCatascopia-Server</name>
+          <group>JCatascopia</group>
+          <vendor>CELAR</vendor>
+          <packager>trihinas@cs.ucy.ac.cy</packager>
+          <copyright>Apache License, Version 2.0</copyright>
+          <url>http://celarcloud.eu</url>
+          <needarch>noarch</needarch>
+          <description>JCatascopia-Server-rpm</description>
+          <mappings>
+            <mapping>
+              <directory>${rpm.install.basedir}/JCatascopia-Server/</directory>
+              <username>root</username>
+              <groupname>root</groupname>
+              <directoryIncluded>false</directoryIncluded>
+              <sources>
+                <source>
+                  <location>${basedir}/target/${jc.tarball}</location>
+                </source>
+              </sources>
+            </mapping>
+          </mappings>
+          <preinstallScriptlet>
+            <script>echo "Installing JCatascopia-Server via RPM..."</script>
+          </preinstallScriptlet>
+          <postinstallScriptlet>
+            <script>tar xvfz ${rpm.install.basedir}/JCatascopia-Server/${jc.tarball} -C ${rpm.install.basedir}/JCatascopia-Server/
+			                cd  ${rpm.install.basedir}/JCatascopia-Server/${jc.dir}
+			                ./${jc.install}
+			                mv -f ${rpm.install.basedir}/JCatascopia-Server/${jc.dir}/JCatascopia-Server-CELAR /etc/init.d/JCatascopia-Server
+							echo "JCatascopia-Server: installation finished..."</script>
+          </postinstallScriptlet>
+          <postremoveScriptlet>
+            <script>/etc/init.d/JCatascopia-Server stop
+	                    	rm -rf /etc/init.d/JCatascopia-Server
+							rm -rf ${rpm.install.basedir}/JCatascopia-Server
+							rm -rf ${rpm.install.basedir}/JCatascopiaServerDir
+							echo "JCatascopia-Server: installation removed..."</script>
+          </postremoveScriptlet>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <properties>
+    <jc.tarball>JCatascopia-Server-${project.version}.tar.gz</jc.tarball>
+    <jc.dir>JCatascopia-Server-${project.version}</jc.dir>
+    <rpm.install.basedir>/usr/local/bin</rpm.install.basedir>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <jc.install>installer.sh</jc.install>
+  </properties>
+</project>
+

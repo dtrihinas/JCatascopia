@@ -1,0 +1,84 @@
+<!--
+  Copyright 2014, Laboratory of Internet Computing (LInC), Department of Computer Science, University of Cyprus
+  
+  For any information relevant to JCatascopia Monitoring System,
+  please contact Demetris Trihinas, trihinas{at}cs.ucy.ac.cy
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+    http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<assembly
+	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
+	<formats>
+		<format>tar.gz</format>
+	</formats>
+	<fileSets>
+		<!-- Create standard descriptive file set -->
+		<fileSet>
+			<directory>${project.basedir}</directory>
+			<outputDirectory>/</outputDirectory>
+			<includes>
+				<include>README*</include>
+				<include>LICENSE*</include>
+				<include>NOTICE*</include>
+			</includes>
+		</fileSet>
+
+		<!-- File set for JCatascopia Agent installer and system service scripts -->
+		<fileSet>
+			<directory>${project.build.directory}/classes</directory>
+			<outputDirectory>/</outputDirectory>
+			<includes>
+				<include>installer.sh</include>
+				<include>JCatascopia-Agent</include>
+			</includes>
+			<fileMode>0755</fileMode>
+			<lineEnding>unix</lineEnding>
+		</fileSet>
+
+		<!-- File set for including the agent public properties and excluding private properties in the package -->
+		<fileSet>
+			<directory>${project.basedir}</directory>
+			<outputDirectory>JCatascopiaAgentDir</outputDirectory>
+			<includes>
+				<include>/resources/agent.*</include>
+			</includes>
+			<excludes>
+				<exclude>/resources/agent_private*</exclude>
+			</excludes>
+		</fileSet>
+
+		<!-- File set for excluding the agent private properties from the package --> 
+		<fileSet>
+			<directory>${project.build.directory}/classes</directory>
+			<outputDirectory>JCatascopiaAgentDir</outputDirectory>
+			<includes>
+				<include>JCatascopia-Agent-*.sh</include>
+			</includes>
+			<fileMode>0755</fileMode>
+			<lineEnding>unix</lineEnding>
+		</fileSet>
+
+		<!-- File set for including the builded artifact -->
+
+		<fileSet>
+			<directory>${project.build.directory}</directory>
+			<outputDirectory>JCatascopiaAgentDir</outputDirectory>
+			<includes>
+				<include>JCatascopia*.jar</include>
+			</includes>
+		</fileSet>
+
+	</fileSets>
+</assembly>
