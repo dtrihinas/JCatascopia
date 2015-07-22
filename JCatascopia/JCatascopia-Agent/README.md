@@ -19,7 +19,7 @@ The complete source code of the JCatascopia Monitoring System is open-source and
 Getting Started
 ---------------
 
-- Download the LATEST version of the JCatascopia-Agent from the CELAR artifact repository:
+- Download the LATEST version of the JCatascopia-Agent from the CELAR artifact repository (rather than cloning our repository):
 
 ```shell
 ### CELAR Repository Parameters
@@ -38,11 +38,11 @@ wget -O JCatascopia-Agent.tar.gz $URL
 tar xvfz JCatascopia-Agent.tar.gz
 ```
 
-- Configure, via its config file, and install the Monitoring Agent. The Monitoring Agent is preconfigured with default properties, however, users are required to set the IP of the JCatascopia-Server(s) if not at localhost e.g.:
+- Configure, via its config file, and install the Monitoring Agent. The Monitoring Agent is pre-configured with default properties, however, users are required to set the IP of the JCatascopia-Server(s) if not at localhost e.g.:
 
 ```
 SERVER_IP=192.168.0.1
-eval "sed -i 's/server_ip=.*/server_ip=$SERVER_IP/g' JCatascopia-Agent-*/JCatascopiaAgentDir/resources/agent.properties"
+eval "sed -i 's/server.endpoint=.*/server.endpoint=$SERVER_IP/g' JCatascopia-Agent-*/JCatascopiaAgentDir/resources/agent.properties"
 cd JCatascopia-Agent-*
 ./installer.sh
 ```

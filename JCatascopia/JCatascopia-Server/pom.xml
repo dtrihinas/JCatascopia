@@ -83,7 +83,7 @@
 							<transformers>
 								<transformer
 									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<mainClass>eu.celarcloud.celar_ms.ServerPack.MonitoringServer</mainClass>
+									<mainClass>eu.celarcloud.jcatascopia.serverpack.MonitoringServer</mainClass>
 								</transformer>
 							</transformers>
 							<filters>
@@ -108,8 +108,8 @@
 					<finalName>JCatascopia-Server-${project.version}</finalName>
 					<archive>
 						<manifest>
-							<mainClass>eu.celarcloud.celar_ms.ServerPack.MonitoringServer</mainClass>
-							<packageName>eu.celarcloud.celar_ms.ServerPack</packageName>
+							<mainClass>eu.celarcloud.jcatascopia.serverpack.MonitoringServer</mainClass>
+							<packageName>eu.celarcloud.jcatascopia.serverpack</packageName>
 						</manifest>
 					</archive>
 				</configuration>

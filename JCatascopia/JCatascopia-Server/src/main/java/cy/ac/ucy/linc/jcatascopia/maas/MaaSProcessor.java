@@ -63,7 +63,8 @@ public class MaaSProcessor implements Runnable{
 	}
 	
 	private void heartbeat() {
-		String[] tokenz = JCompression.decode(msg[2].getBytes()).split("\\|");
+		//String[] tokenz = JCompression.decode(msg[2].getBytes()).split("\\|");
+		String[] tokenz = msg[2].split("\\|");
 		String sID = msg[0];
 		String sIP = tokenz[0];
 		int sCnt = Integer.parseInt(tokenz[1]);

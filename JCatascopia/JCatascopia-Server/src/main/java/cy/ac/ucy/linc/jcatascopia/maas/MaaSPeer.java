@@ -39,13 +39,13 @@ public class MaaSPeer extends Thread{
 					sb.append((!first) ? "," + a.getValue().getAgentIP() : a.getValue().getAgentIP());
 					first = false;	
 				}
-				String msg = "";
-				try {
-					msg = new String(JCompression.encode(sb.toString()));
-				}
-				catch(IOException e1) {
-					e1.printStackTrace();
-				}
+				String msg = sb.toString();
+//				try {
+//					//msg = new String(JCompression.encode(sb.toString()));
+//				}
+//				catch(IOException e1) {
+//					e1.printStackTrace();
+//				}
 				this.dealer.send("", MaaSPeer.MSG_TYPE, msg);
 				Thread.sleep(10000);
 			}	
