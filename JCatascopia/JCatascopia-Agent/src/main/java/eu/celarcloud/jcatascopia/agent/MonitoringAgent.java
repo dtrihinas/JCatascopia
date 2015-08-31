@@ -670,8 +670,10 @@ public class MonitoringAgent implements IMonitoringAgent{
 	 */
 	public static void main(String[] args) throws CatascopiaException{
 		try{	
-			if (args.length > 0)
+			if (args.length > 1)
 				new MonitoringAgent(args[0], args[1]);
+			else if (args.length == 1)
+				new MonitoringAgent(args[0], null);
 			else
 				new MonitoringAgent(".", null);
 		}catch(Exception e){
