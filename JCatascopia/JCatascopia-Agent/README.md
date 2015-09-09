@@ -8,9 +8,11 @@ Prerequisites
 
 JCatascopia-Agent only requires Java to be installed. Recommended versions are 1.6.x and 1.7.x
 
+Note: if you will be building JCatascopia via command line tools then git and mvn are required as well
+
 - **Network Prerequisites** 
 
-JCatascopia-Agent uses for the scope of the [CELAR](http://celarcloud.eu/) project TCP as its default distribution network protocol. Ports 4242, 4243 and 4245 must be made available
+JCatascopia-Agent uses TCP as its default distribution network protocol. Ports 4242, 4243 and 4245 must be opened and made available
 
 Licence
 ---------------
@@ -18,46 +20,55 @@ The complete source code of the JCatascopia Monitoring System is open-source and
 
 Getting Started
 ---------------
+Note: if you have an IDE supporting git repository imports and maven then skip steps 1 and 2
 
-- Download the LATEST version of the JCatascopia-Agent from the CELAR artifact repository (rather than cloning our repository):
+- Step 1: Import the JCatascopia git repository to your IDE or clone the repository:
 
 ```shell
-### CELAR Repository Parameters
-# if CELAR repo not valid please contact us.
-# select version to download, for simplicity the lastest version uses the LATEST tag.
-# JCatascopia-Agent is distributed as a tarball or Jar
-###
-CELAR_REPO=http://snf-175960.vm.okeanos.grnet.gr
-JC_VERSION=LATEST
-JC_ARTIFACT=JCatascopia-Agent
-JC_GROUP=eu.celarcloud.cloud-ms
-JC_TYPE=tar.gz
-
-URL="$CELAR_REPO/nexus/service/local/artifact/maven/redirect?r=snapshots&g=$JC_GROUP&a=$JC_ARTIFACT&v=$JC_VERSION&p=$JC_TYPE"
-wget -O JCatascopia-Agent.tar.gz $URL
-tar xvfz JCatascopia-Agent.tar.gz
+git clone https://github.com/dtrihinas/JCatascopia.git
 ```
 
-- Configure, via its config file, and install the Monitoring Agent. The Monitoring Agent is pre-configured with default properties, however, users are required to set the IP of the JCatascopia-Server(s) if not at localhost e.g.:
+- Step 2: Build via maven the JCatascopia components:
 
-```
-SERVER_IP=192.168.0.1
-eval "sed -i 's/server.endpoint=.*/server.endpoint=$SERVER_IP/g' JCatascopia-Agent-*/JCatascopiaAgentDir/resources/agent.properties"
-cd JCatascopia-Agent-*
-./installer.sh
+```shell
+mvn clean install
 ```
 
-- Start the JCatascopia-Agent:
+- Step 3: JCatascopia Agents are packaged as a tarball, extract the contents of the tarball:
+
+```shell
+tar xvfz JCatascopia-Agent-<VERSION>-SNAPSHOT.tar.gz
+```
+
+- Step 4: Enter the extracted directory and execute the installer *with root permission*:
+
+```shell
+cd JCatascopia-Agent-<VERSION>-SNAPSHOT
+./installer
+```
+
+- Step 5: The JCatascopia Agent is pre-configured with default properties. However, if the JCatascopia-Server is not at localhost then at least the server.endpoint property must change 
+
+```shell
+vi /usr/local/bin/JCatascopiaAgentDir/resources/agent.properties
+server.endpoint=IP_OF_JCATSCOPIA_SERVER
+```
+
+- Step 6: Starting the JCatascopia-Agent:
 
 ```shell
 /etc/init.d/JCatascopia-Agent start
 ```
 
-- An exemplary deployment script to automatically download and configure JCatascopia-Agent can be found [here](https://github.com/CELAR/celar-deployment/blob/master/vm/jcatascopia-agent.sh)
+- Step 7: Stopping the JCatascopia-Agent:
+
+```shell
+/etc/init.d/JCatascopia-Agent stop
+```
 
 Note
 ---------------
-This version of JCatascopia is compliant for the purposes of the [CELAR](http://celarcloud.eu/) project. For the standalone version of JCatascopia please refer to [http://linc.ucy.ac.cy/CELAR/jcatascopia](http://linc.ucy.ac.cy/CELAR/jcatascopia)
+This version is the standalone version of JCatascopia. For the [CELAR](http://celarcloud.eu/) project compliant version please have a look [here] (https://github.com/CELAR/cloud-ms)
 
 Contact Us
 ---------------
