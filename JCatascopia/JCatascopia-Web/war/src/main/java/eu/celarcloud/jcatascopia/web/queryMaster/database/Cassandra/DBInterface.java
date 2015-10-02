@@ -169,6 +169,44 @@ public class DBInterface implements IDBInterface{
 		return null;		
 	}
 	
+	//new
+	public ArrayList<MetricObj> getAgentAvailableMetricsAndValues(String agentID) {
+		try{
+			//get all of the agent's metric ids
+			ArrayList<MetricObj> metricmeta = this.getAgentAvailableMetrics(agentID);
+			ArrayList<String> ids = new ArrayList<String>();
+			for(MetricObj m : metricmeta)
+				ids.add(m.getMetricID());
+			
+			//get all of the agent's metric values
+			String[] metrics = new String[ids.size()];
+			metrics = ids.toArray(metrics);
+			return this.getMetricValues(metrics);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;		
+	}
+	
+	//new
+	public ArrayList<MetricObj> getDeploymentAvailableMetricsAndValues() {
+		try{
+			ArrayList<MetricObj> metriclist = new ArrayList<MetricObj>();
+			
+			ArrayList<AgentObj> agentmeta = this.getAgents(null);
+			for(AgentObj a : agentmeta) {
+				metriclist.addAll(this.getAgentAvailableMetricsAndValues(a.getAgentID()));
+			}
+		
+			return metriclist;
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;		
+	}
+	
 	public ArrayList<MetricObj> getMetricValues(String[] registeredMetrics){
 		try{
 			BoundStatement bs = this.getMetricValuesStmt.bind();

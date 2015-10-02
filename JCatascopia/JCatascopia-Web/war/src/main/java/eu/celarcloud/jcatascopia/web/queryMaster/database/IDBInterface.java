@@ -47,5 +47,7 @@ public interface IDBInterface{
 	public ArrayList<MetricObj> getAvailableMetricsForAllAgents();
 	
 	public ArrayList<AgentObj> getAgentsWithTimestamps(String status);
-
+	
+	public ArrayList<MetricObj> getAgentAvailableMetricsAndValues(String agentID);
+	public ArrayList<MetricObj> getDeploymentAvailableMetricsAndValues();
 }

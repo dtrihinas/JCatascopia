@@ -579,4 +579,14 @@ public class DBInterfaceWithConnPool implements IDBInterface{
 	
 	public ArrayList<MetricObj> getAvailableMetricsForAllAgents(){return null;}
 
+	public ArrayList<MetricObj> getAgentAvailableMetricsAndValues(String agentID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public ArrayList<MetricObj> getDeploymentAvailableMetricsAndValues() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

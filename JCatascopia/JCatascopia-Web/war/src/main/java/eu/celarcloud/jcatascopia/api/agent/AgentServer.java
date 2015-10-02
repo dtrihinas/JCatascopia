@@ -127,6 +127,62 @@ public class AgentServer {
 			           .build();			
 	}
 	
+	//new
+	@GET
+	@Path("/{agentID}/metrics")
+	@Produces({MediaType.APPLICATION_JSON})
+	public Response getAllMetricValuesForAgent(@Context HttpServletRequest req, 
+												@Context HttpServletResponse response,
+			              	                    @Context ServletContext context,
+			              	                    @PathParam("agentID") String agentID) {
+		IDBInterface dbInterface = (IDBInterface) context.getAttribute("dbInterface");
+    	    	
+		ArrayList<MetricObj> metriclist = dbInterface.getAgentAvailableMetricsAndValues(agentID);
+		StringBuilder sb = new StringBuilder();
+		sb.append("{\"metrics\":[");
+		boolean first = true;
+		if(metriclist != null)
+			for(MetricObj m: metriclist) {
+				if(!first) sb.append(",");
+				sb.append(m.toJSON());
+				first = false;
+			}
+		sb.append("]}");
+		
+	
+		return Response.status(Response.Status.OK)
+			           .entity(sb.toString())
+			           .build();	
+	}
+	
+	//new
+	@GET
+	@Path("/metrics")
+	@Produces({MediaType.APPLICATION_JSON})
+	public Response getAllMetricValuesForDeployment(@Context HttpServletRequest req, 
+													 @Context HttpServletResponse response,
+				              	                     @Context ServletContext context) {
+		IDBInterface dbInterface = (IDBInterface) context.getAttribute("dbInterface");
+    	    	
+		ArrayList<MetricObj> metriclist = dbInterface.getDeploymentAvailableMetricsAndValues();
+		StringBuilder sb = new StringBuilder();
+		sb.append("{\"metrics\":[");
+		boolean first = true;
+		if(metriclist != null)
+			for(MetricObj m: metriclist) {
+				if(!first) sb.append(",");
+				sb.append(m.toJSON());
+				first = false;
+			}
+		sb.append("]}");
+		
+	
+		return Response.status(Response.Status.OK)
+			           .entity(sb.toString())
+			           .build();	
+	}
+	
+	
 	@GET
 	@Path("/availableMetrics")
 	@Produces({MediaType.APPLICATION_JSON})
