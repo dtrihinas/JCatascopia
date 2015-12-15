@@ -13,47 +13,37 @@
 NAME=JCatascopia-Server
 LOCKFILE=/var/lock/JCatascopia-Server-lock
 JCPATH=/usr/local/bin/JCatascopiaServerDir
-JCWEB=/usr/share/tomcat/bin
 
 case $1 in
     start)
 		if [ -e $LOCKFILE ] ; then
             echo "$NAME already up and running..."
-    	    exit
-        fi   
-             
-        #doing a hack for CELAR
-        hostname localhost
-        cassandra -p /tmp/cass.pid > /dev/null
-        sleep 20s
-        #end of hack
-        
-        touch $LOCKFILE
-        /bin/bash $JCPATH/JCatascopia-Server-start.sh
-        echo "Starting $NAME..."
-        
-        #start JCatascopia-Web, if available for this node
-        if [ -d $JCWEB ]; then
-                $JCWEB/startup.sh
+            exit
         fi
+        touch $LOCKFILE
+        
+        echo "Starting CassandraDB...(it may take a minute or so...)"
+        /bin/bash /var/lib/cassandra/bin/cassandra -p /tmp/cass.pid
+		sleep 30s
+		
+        echo "Starting $NAME..."
+        /bin/bash $JCPATH/$NAME-start.sh
+        echo "$NAME started..."
     ;;
     stop)
         if [ -e $LOCKFILE ] ; then
             rm -f $LOCKFILE
-           
-		    #stopJCatascopia-Web, if available for this node
-	        if [ -d $JCWEB ]; then
-	                $JCWEB/shutdown.sh
-	        fi	
-	        #doing a hack for CELAR
-	        if [ -f /tmp/cass.pid ]; then
+            
+            echo "Stopping CassandraDB...(it may take a minute or so...)"
+            if [ -f /tmp/cass.pid ]; then
 	        	 kill -9 $(cat /tmp/cass.pid)
 	        	rm -rf /tmp/cass.pid
+	        	sleep 10s
 	        fi	
-	        #end of hack
-	        
-	         echo "Stopping $NAME..."
-            /bin/bash $JCPATH/JCatascopia-Server-stop.sh
+            
+            echo "Stopping $NAME..."
+            /bin/bash $JCPATH/$NAME-stop.sh
+            echo "$NAME stopped..."     
         else  
 	    	echo "$NAME not running..."
 	    	exit
@@ -66,7 +56,16 @@ case $1 in
 		$0 stop
 		$0 start
     ;;
+    status)
+        MSPID=`ps -elf | grep $NAME | grep -v grep | awk '{print $4}'`
+
+        if [ -n "$MSPID" ]; then
+          echo "$NAME running with PID $MSPID..."
+          exit
+        fi
+         echo "$NAME not running..."
+    ;;
     *)
-    	echo "Usage: /etc/init.d/$NAME {start|stop|restart}"
+    	echo "Usage: /etc/init.d/$NAME {start|stop|restart|status}"
 esac
 exit
