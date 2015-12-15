@@ -39,7 +39,7 @@ public class DistributorWorker extends Deamon {
 			if(this.aggregator.length() > 0) { //check if there are any new messages
 				if (current > INTERVAL || aggregator.length() > BUF_SIZE) { //time to send message to server
 					this.distributor.send(aggregator.toMessage());
-					if (!this.agent.inDebugMode())
+					if (this.agent.inDebugMode())
 						System.out.println("DistributorWorker>> Message sent to Monitoring Server");
 					current = 0;
 					this.aggregator.clear();
